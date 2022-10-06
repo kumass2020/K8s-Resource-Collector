@@ -67,8 +67,8 @@ for namespace in namespace_list:
                         print('got yaml: ' + resource)
                         break
 
-subprocess.check_output('cd ..', shell=True)
-subprocess.check_output('python3 /home/ccl/filled_file_collector.py', shell=True)
-subprocess.check_output('cd ' + current_path, shell=True)
+# subprocess.check_output('cd ..', shell=True)
+# subprocess.check_output('python3 /home/ccl/filled_file_collector.py', shell=True)
+# subprocess.check_output('cd ' + current_path, shell=True)
 
 
