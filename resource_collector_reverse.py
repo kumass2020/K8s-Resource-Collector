@@ -25,7 +25,7 @@ for i, element in enumerate(output_list):
 
 resource_type_str = 'pvc,configmap,serviceaccount,secret,service,deployment,statefulset,hpa,job,cronjob,node,endpoints,rolebindings,roles,netpol,replicasets,pdb,pod'
 resource_type_list = resource_type_str.split(',')
-for namespace in namespace_list:
+for namespace in reversed(namespace_list):
     print('init ' + namespace + '...')
     for resource_type in resource_type_list:
         resource_list = []
