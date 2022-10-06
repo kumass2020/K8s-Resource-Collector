@@ -1,7 +1,16 @@
 import subprocess
 import os
 from os import path
-output = subprocess.check_output('kubectl get namespace --all-namespaces -o=name', shell=True)
+import time
+
+while True:
+    try:
+        output = subprocess.check_output('kubectl get namespace --all-namespaces -o=name', shell=True)
+        print('got namespaces')
+        break
+    except subprocess.CalledProcessError:
+        print('refused')
+        time.sleep(0.5)
 output_list = str(output).lstrip("b'").rstrip("'").split('\\n')
 output_list.pop()
 
@@ -20,7 +29,16 @@ for namespace in namespace_list:
     print('init ' + namespace + '...')
     for resource_type in resource_type_list:
         resource_list = []
-        output = subprocess.check_output('kubectl get -n ' + namespace + ' -o=name ' + resource_type, shell=True)
+        while True:
+            try:
+                output = subprocess.check_output('kubectl get -n ' + namespace + ' -o=name ' + resource_type, shell=True)
+                print('got resources: ' + namespace + '/' + resource_type)
+                break
+            except subprocess.CalledProcessError:
+                print('refused')
+                time.sleep(0.5)
+                pass
+
         output_list = str(output).lstrip("b'").rstrip("'").split('\\n')
         output_list.pop()
 
@@ -30,12 +48,17 @@ for namespace in namespace_list:
             for resource in resource_list:
                 subprocess.check_output('mkdir -p $(dirname ' + resource + ')', shell=True)
                 while True:
-                    output = subprocess.check_output('kubectl get -n ' + namespace + ' -o=yaml ' + resource + ' > ' + resource + '.yaml', shell=True)
+                    try:
+                        output = subprocess.check_output('kubectl get -n ' + namespace + ' -o=yaml ' + resource + ' > ' + resource + '.yaml', shell=True)
+                    except subprocess.CalledProcessError:
+                        print('refused')
+                        time.sleep(0.5)
+                        continue
                     if 'refused' in str(output):
                         print('refused')
                         pass
                     else:
-                        print('got yaml')
+                        print('got yaml: ' + resource)
                         break
 
 subprocess.check_output('cd ..', shell=True)
